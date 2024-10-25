@@ -29,7 +29,7 @@ class GameController
     {
         if (!isset($_SESSION['game'])) {
             $jugador1 = new Player($request['name'], $request['color']);
-            $jugador2 = new Player("Jugador 2", "pink");
+            $jugador2 = new Player("Jugador 2", "pink", true);
             $this->game = new Game($jugador1, $jugador2);
             $this->game->save();
         } else {
