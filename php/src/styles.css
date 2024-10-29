@@ -19,6 +19,26 @@ td {
    
 }
 
+.panel {
+    display: flex;
+    flex-direction: row;
+
+    table {
+        margin-right: 10px; 
+        border: #000 1px solid;
+    }
+
+    table td {
+        font-size: 16px;
+        font-weight: italic;
+        padding: 10px;
+        vertical-align: middle;
+        text-align: center; 
+        top: 0;
+        bottom: 0;
+    }
+}
+
 .formulari-container {
     background-color: white;
     padding: 20px;

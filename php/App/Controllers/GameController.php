@@ -1,9 +1,11 @@
 <?php
+
 namespace Joc4enRatlla\Controllers;
 
 use Joc4enRatlla\Models\Player;
 use Joc4enRatlla\Models\Game;
 use Joc4enRatlla\Exceptions\IllegalMoveException;
+use Joc4enRatlla\Services\Logger; // Asegúrate de incluir la clase Logger
 
 /**
  * Clase GameController
@@ -32,8 +34,11 @@ class GameController
             $jugador2 = new Player("Jugador 2", "pink", true);
             $this->game = new Game($jugador1, $jugador2);
             $this->game->save();
+            
+            Logger::getInstance()->info("Nueva partida iniciada por {$jugador1->getName()} con color {$jugador1->getColor()}.");
         } else {
             $this->game = Game::restore();
+            Logger::getInstance()->info("Partida restaurada desde la sesión.");
         }
         $this->play($request);
     }
@@ -55,12 +60,14 @@ class GameController
         if (isset($request['reset'])) {
             $this->game->reset();
             $this->game->save();
+            Logger::getInstance()->info("El juego ha sido reiniciado.");
         }
 
         // Finaliza la sesión y sale del juego si se solicita
         if (isset($request['exit'])) {
             unset($_SESSION['game']);
             session_destroy();
+            Logger::getInstance()->info("El jugador ha salido del juego.");
             header("location:/index.php");
             exit();
         }
@@ -69,6 +76,7 @@ class GameController
         if (!$this->game->getWinner() && !$this->game->getPlayer()->isAutomatic() && isset($request['columna'])) {
             try {
                 $this->game->play($request['columna']);
+                Logger::getInstance()->info("Movimiento realizado en la columna {$request['columna']}.");
             } catch (IllegalMoveException $e) {
                 $error = $e->getMessage();
             }
@@ -77,6 +85,7 @@ class GameController
         // Si es el turno de un jugador automático, realiza el movimiento automático
         if (!$this->game->getWinner() && $this->game->getPlayer()->isAutomatic()) {
             $this->game->playAutomatic();
+            Logger::getInstance()->info("El jugador automático ha realizado su movimiento.");
         }
 
         // Obtiene los datos actualizados del juego para la vista
