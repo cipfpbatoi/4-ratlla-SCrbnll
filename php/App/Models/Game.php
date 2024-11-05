@@ -7,125 +7,134 @@ use Joc4enRatlla\Models\Board;
 use Joc4enRatlla\Models\Player;
 
 /**
- * Class Game
- * 
- * Representa una partida del juego Cuatro en Línea, gestionando el estado del juego, el tablero, los jugadores y sus movimientos.
+ * Clase Game que representa la lógica principal de una partida,
+ * gestionando los jugadores, el tablero y el estado de la partida.
  */
 class Game {
     /**
-     * @var Board El tablero del juego.
+     * Tablero del juego.
+     *
+     * @var Board
      */
     private Board $board;
 
     /**
-     * @var int El jugador que tiene el siguiente turno.
+     * Número del próximo jugador en turno (1 o 2).
+     *
+     * @var int
      */
     private int $nextPlayer;
-    
+
     /**
-     * @var Player[] Lista de los jugadores en el juego.
+     * Array de jugadores de la partida.
+     *
+     * @var Player[]
      */
     private array $players;
 
     /**
-     * @var Player|null El jugador ganador, si hay alguno.
+     * Jugador ganador de la partida, si existe.
+     *
+     * @var Player|null
      */
     private ?Player $winner;
-    
+
     /**
-     * @var int[] Puntuaciones de los jugadores.
+     * Puntuaciones de los jugadores.
+     *
+     * @var int[]
      */
     private array $scores = [1 => 0, 2 => 0];
 
     /**
      * Constructor de la clase Game.
      *
-     * @param Player $jugador1 El primer jugador.
-     * @param Player $jugador2 El segundo jugador.
+     * @param Player $jugador1 Jugador 1 de la partida.
+     * @param Player $jugador2 Jugador 2 de la partida.
      */
     public function __construct(Player $jugador1, Player $jugador2) {
         $this->board = new Board();
-        $this->nextPlayer = random_int(1, 2); // Determina aleatoriamente quién juega primero.
+        $this->nextPlayer = random_int(1, 2);
         $this->players = [1 => $jugador1, 2 => $jugador2];
         $this->winner = null;
     }
-
+    
     /**
-     * Obtiene el tablero actual del juego.
+     * Obtiene el tablero del juego.
      *
-     * @return Board El tablero del juego.
+     * @return Board
      */
     public function getBoard(): Board {
         return $this->board;
     }
-
+    
     /**
-     * Obtiene el jugador que tiene el próximo turno.
+     * Obtiene el número del siguiente jugador en turno.
      *
-     * @return int El número del siguiente jugador (1 o 2).
+     * @return int
      */
     public function getNextPlayer(): int {
         return $this->nextPlayer;
     }
 
     /**
-     * Obtiene el jugador que tiene el turno actual.
+     * Obtiene el jugador actual en turno.
      *
-     * @return Player El jugador actual.
+     * @return Player
      */
     public function getPlayer(): Player {
         return $this->players[$this->nextPlayer];
     }
 
     /**
-     * Obtiene el jugador ganador, si hay uno.
+     * Obtiene el jugador ganador de la partida, si existe.
      *
-     * @return Player|null El jugador ganador o null si no hay ninguno.
+     * @return Player|null
      */
     public function getWinner(): ?Player {
         return $this->winner;
     }
-
+    
     /**
-     * Establece el siguiente jugador que debe jugar.
+     * Establece el siguiente jugador en turno.
      *
-     * @param int $jugador El número del jugador (1 o 2).
+     * @param int $jugador Número del jugador (1 o 2).
      * @return void
      */
     public function setNextPlayer(int $jugador): void {
         $this->nextPlayer = $jugador;
     }
-
+    
     /**
-     * Obtiene la lista de jugadores.
+     * Obtiene el array de jugadores de la partida.
      *
-     * @return Player[] Un array con los dos jugadores.
+     * @return Player[]
      */
     public function getPlayers(): array {
         return $this->players;
     }
-
+    
     /**
      * Obtiene las puntuaciones de los jugadores.
      *
-     * @return int[] Un array con las puntuaciones de los jugadores.
+     * @return int[]
      */
     public function getScores(): array {
         return $this->scores;
     }
-
+    
     /**
      * Establece las puntuaciones de los jugadores.
      *
-     * @param int[] $scores Array asociativo con las puntuaciones de los jugadores.
+     * @param int[] $scores Array de puntuaciones.
      * @return void
      */
     public function setScores(array $scores): void {
         $this->scores = $scores;
     }
-
+    
     /**
-     * Reinicia el juego, creando un nuevo tablero y reiniciando los jugadores.
+     * Reinicia el estado de la partida.
      *
      * @return void
      */
@@ -136,14 +145,13 @@ class Game {
     }
 
     /**
-     * Realiza un movimiento en el juego.
-     * Si el movimiento no es válido, lanza una excepción.
+     * Realiza un movimiento en el juego en la columna especificada.
      *
-     * @param int $columna La columna donde se realiza el movimiento.
-     * @throws IllegalMoveException Si el movimiento es inválido.
+     * @param int $columna Número de la columna para el movimiento.
+     * @throws IllegalMoveException Si el movimiento no es válido.
      * @return void
      */
-    public function play(int $columna): void {
+    public function play($columna) {
         if (!$this->board->isValidMove($columna)) {
             throw new IllegalMoveException("Moviment no vàlid");
         }
@@ -154,27 +162,24 @@ class Game {
             $this->winner = $this->players[$this->nextPlayer];
             $this->scores[$this->nextPlayer]++;
         } else {
-            $this->nextPlayer = ($this->nextPlayer == 1) ? 2 : 1;
+             $this->nextPlayer = ($this->nextPlayer == 1) ? 2 : 1;
         }
-
         $this->save();
     }
 
     /**
-     * Realiza un movimiento automático (jugada de la máquina).
-     * 
-     * Trata de ganar en el próximo turno, o de evitar que el oponente gane.
+     * Realiza un movimiento automático por el jugador de turno.
      *
      * @return void
      */
-    public function playAutomatic(): void {
+    public function playAutomatic() {
         $opponent = $this->nextPlayer === 1 ? 2 : 1;
 
-        // Intentar ganar en la siguiente jugada
         for ($col = 1; $col <= Board::COLUMNS; $col++) {
             if ($this->board->isValidMove($col)) {
                 $tempBoard = clone($this->board);
                 $coord = $tempBoard->setMovementOnBoard($col, $this->nextPlayer);
+
                 if ($tempBoard->checkWin($coord)) {
                     $this->play($col);
                     return;
@@ -182,7 +187,6 @@ class Game {
             }
         }
 
-        // Bloquear al oponente si puede ganar
         for ($col = 1; $col <= Board::COLUMNS; $col++) {
             if ($this->board->isValidMove($col)) {
                 $tempBoard = clone($this->board);
@@ -194,37 +198,75 @@ class Game {
             }
         }
 
-        // Elegir una jugada al azar o en el medio
-        $possibles = [];
+        $possibles = array();
         for ($col = 1; $col <= Board::COLUMNS; $col++) {
             if ($this->board->isValidMove($col)) {
                 $possibles[] = $col;
             }
         }
 
-        // Elegir columna al azar, con preferencia por el centro
-        if (count($possibles) > 2) {
-            $random = rand(-1, 1);
+        if (count($possibles)) {
+            $random = count($possibles) > 2 ? rand(-1, 1) : 0;
+            $middle = (int) ((count($possibles) + 0.9) / 2) + $random;
+            $inthemiddle = $possibles[$middle];
+            $this->play($inthemiddle);
         }
-        $middle = (int) (count($possibles) / 2) + $random;
-        $this->play($possibles[$middle]);
     }
 
     /**
-     * Guarda el estado del juego en la sesión.
+     * Guarda el estado actual del juego en la sesión.
      *
      * @return void
      */
-    public function save(): void {
+    public function save() {
         $_SESSION['game'] = serialize($this);
     }
 
     /**
-     * Restaura el estado del juego desde la sesión.
+     * Restaura el juego desde la sesión.
      *
-     * @return Game El juego restaurado.
+     * @return Game
      */
-    public static function restore(): Game {
+    public static function restore() {
         return unserialize($_SESSION['game'], [Game::class]);
+    }
+
+    /**
+     * Guarda el estado actual del juego en la base de datos.
+     *
+     * @param mixed $db Conexión a la base de datos.
+     * @return bool True si se guardó correctamente, false en caso contrario.
+     */
+    public function saveGame($db) {
+        $usuari_id = $_SESSION['user_id'];
+        $game  = $_SESSION['game'];
+
+        $query = "INSERT INTO partides (usuari_id, game ) 
+                  VALUES (:usuari_id, :game) 
+                  ON DUPLICATE KEY UPDATE 
+                  game = :game";
+
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':usuari_id', $usuari_id);
+        $stmt->bindParam(':game', $game);
+
+        return $stmt->execute();
+    }
+
+    /**
+     * Restaura el juego desde la base de datos.
+     *
+     * @param mixed $db Conexión a la base de datos.
+     * @return Game
+     */
+    public static function restoreGame($db) {
+        $usuari_id = $_SESSION['user_id'];
+        $query = "SELECT * FROM partides WHERE usuari_id = :usuari_id";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':usuari_id', $usuari_id);
+        $stmt->execute();
+        $partida = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        return unserialize($partida['game'], [Game::class]);
     }
 }

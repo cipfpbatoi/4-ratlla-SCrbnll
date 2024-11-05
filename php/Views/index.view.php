@@ -4,11 +4,11 @@
     <title>4 en ratlla</title>
     <style>
         .player1 {
-            background-color: <?= $players[1]->getColor() ?> ;
+            background-color: <?= $players[1]->getColor() ?> ; 
         }
 
         .player2 {
-            background-color:  <?= $players[2]->getColor() ?>;
+            background-color:  <?= $players[2]->getColor() ?>; 
         }
 
     </style>
@@ -19,8 +19,10 @@
     <?php include_once $_SERVER['DOCUMENT_ROOT'].'/../Views/partials/board.view.php'  ?>
      <input type="submit" name="reset" value="Reiniciar joc">
      <input type="submit" name="exit" value="Sortir">
+     <input type="submit" name="save" value="Guardar Partida">
+     <input type="submit" name="restore" value="Restaurar  Partida">
 </form>
  <?php include_once $_SERVER['DOCUMENT_ROOT'].'/../Views/partials/panel.view.php'  ?>
 
 </body>
-</html>
+</html
