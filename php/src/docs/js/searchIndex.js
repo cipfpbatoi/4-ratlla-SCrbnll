@@ -256,6 +256,26 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Joc4enRatlla-Models-Player.html#property_color"
         },                {
+            "fqsen": "\\Joc4enRatlla\\Services\\Logger",
+            "name": "Logger",
+            "summary": "",
+            "url": "classes/Joc4enRatlla-Services-Logger.html"
+        },                {
+            "fqsen": "\\Joc4enRatlla\\Services\\Logger\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/Joc4enRatlla-Services-Logger.html#method___construct"
+        },                {
+            "fqsen": "\\Joc4enRatlla\\Services\\Logger\u003A\u003AgetInstance\u0028\u0029",
+            "name": "getInstance",
+            "summary": "",
+            "url": "classes/Joc4enRatlla-Services-Logger.html#method_getInstance"
+        },                {
+            "fqsen": "\\Joc4enRatlla\\Services\\Logger\u003A\u003A\u0024instance",
+            "name": "instance",
+            "summary": "",
+            "url": "classes/Joc4enRatlla-Services-Logger.html#property_instance"
+        },                {
             "fqsen": "\\Joc4enRatlla\\Services\\Service",
             "name": "Service",
             "summary": "",
